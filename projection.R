@@ -24,3 +24,28 @@ Y_hat = fitted.values(obj)
 RMSE_all = sqrt(mean((Y_hat - Y)^2))
 RMSE_1 = sqrt(sum(((Y_hat - Y)^2) *A)/sum(A))
 RMSE_0 = sqrt(sum(((Y_hat - Y)^2) *(1 - A))/sum(1 - A))
+
+library(ks)
+
+
+##Generating dummy A
+y1 = Y[A == 1]
+y0 = Y[A == 0]
+p1 = length(y1)/n
+p0 = length(y0)/n
+#sd1 = sqrt(var(y1))
+p = (kde(y1, eval.points = Y)$estimate*p1)/(kde(y0, eval.points = Y)$estimate*p0+ kde(y1, eval.points = Y)$estimate*p1)
+A_star = rbinom(n, 1, p)
+
+##Our method
+
+B = matrix(c(1,1.5,-0.2,2), nrow = 2)
+X_new = matrix(nrow = n, ncol = 2)
+for(i in 1:n)
+{
+  X_new[i,] = B%*%X[i,]
+}
+
+lambda = 0.2
+kmmd(cbind(X_new, A, Y), cbind(X_new, A_star, Y)) - lambda*
+
