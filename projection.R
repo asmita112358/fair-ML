@@ -2,9 +2,11 @@
 
 ##Using the data generation idea from Romano et al, Achieving Equalized odds
 
-n = 1000
-library(dplyr)
 
+library(dplyr)
+library(ks)
+library(kernlab)
+n = 1000
 A = sample(c(0,1), size = n, replace = T, prob = c(0.1,0.9))
 Z1 = rnorm(n)
 Z2 = rnorm(n)
@@ -25,7 +27,7 @@ RMSE_all = sqrt(mean((Y_hat - Y)^2))
 RMSE_1 = sqrt(sum(((Y_hat - Y)^2) *A)/sum(A))
 RMSE_0 = sqrt(sum(((Y_hat - Y)^2) *(1 - A))/sum(1 - A))
 
-library(ks)
+
 
 
 ##Generating dummy A
@@ -47,5 +49,7 @@ for(i in 1:n)
 }
 
 lambda = 0.2
-kmmd(cbind(X_new, A, Y), cbind(X_new, A_star, Y)) - lambda*
+u = kmmd(cbind(X_new, A, Y), cbind(X_new, A_star, Y)) 
+v = -0.2*sqrt(sum((B%*%cov(X))^2))
+
 
